@@ -152,12 +152,12 @@ def solar_corr(data, labels, center, orbits=10):
     ax.axis("equal")
     plt.show()
 
-def main(input_csv):
+def main(input_csv,sun):
     # Load data
     data = np.genfromtxt(input_csv, delimiter=",", skip_header=1)
     labels = csv.DictReader(open(input_csv),skipinitialspace=True).fieldnames
-    solar_corr(data, labels, "MEDV")
+    solar_corr(data, labels, sun)
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2])
