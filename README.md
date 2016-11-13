@@ -3,7 +3,7 @@ A new way to visualize correlations.
 
 # Dataset 
 
-We are using the Housing Data Set.  This dataset was taken from the StatLib library which is maintained at Carnegie Mellon University. It is derived from: 
+We are using the Housing Data Set. It comes orginially from the StatLib library by Carnegie Mellon University based on the article from: 
 
 Harrison, D. and Rubinfeld, D.L. 
 'Hedonic prices and the demand for clean air', J. Environ. Economics & Management, vol.5, 81-102, 1978.
