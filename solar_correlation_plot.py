@@ -56,7 +56,7 @@ def transform_to_correlation_dist(data):
     # we just need the magnitude of the correlation and don't care whether it's positive or not
     return np.abs(y_corr)
 
-def solar_corr(data, labels, center, orbits=10):
+def solar_corr(data, labels, center, image_path, orbits=10):
     labels = np.array(labels)
     center_idx, center_idx_bool = label_to_idx(labels, center)
 
@@ -68,6 +68,7 @@ def solar_corr(data, labels, center, orbits=10):
     step = 1.0 / orbits
     last_orbit = 0.0
     fig = plt.gcf()
+    fig.set_size_inches(20, 20)
     labels_idx = np.array([center_idx])
 
     color_map = plt.get_cmap("Paired")
@@ -150,14 +151,18 @@ def solar_corr(data, labels, center, orbits=10):
     ax = plt.gca()
 
     ax.axis("equal")
+    plt.axis([-10,10,-10,10])
+    plt.savefig(image_path)
     plt.show()
+    
 
-def main(input_csv,sun):
+def main(input_csv,sun,image_path):
     # Load data
     data = np.genfromtxt(input_csv, delimiter=",", skip_header=1)
     labels = csv.DictReader(open(input_csv),skipinitialspace=True).fieldnames
-    solar_corr(data, labels, sun)
+    solar_corr(data, labels, sun, image_path)
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    image_path = sys.argv[3] if len(sys.argv) > 3 else "solar.png" 
+    main(sys.argv[1], sys.argv[2], image_path)
