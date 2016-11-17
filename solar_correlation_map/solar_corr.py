@@ -30,11 +30,12 @@ import numpy as np
 import sys
 import csv
 
-def get_angles(orbit, number_of_datapoints):
+def get_angles(orbit, number_of_datapoints, ax):
     start = (2 * math.pi) / 11 * (orbit - 1)
-
     stop = start + (math.pi / 2)
-
+    if orbit > 0:
+        ax.text(0, orbit, "{0:.2f}".format(1 - float(orbit) / 10), verticalalignment = "top",
+                horizontalalignment = "center", color = "lightgray")
     return np.linspace(start, stop, number_of_datapoints, endpoint=True)
 
 
@@ -81,7 +82,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
 
     # place sun:
     plt.scatter(0, 0, color=color_map(colors[center_idx]), s=600, label=labels[center_idx])
-    ax.text(0, 0.15, str(labels[center_idx]),verticalalignment="bottom", horizontalalignment='left')
+    ax.text(0.3, 0.25, str(labels[center_idx]), verticalalignment="bottom", horizontalalignment='left', color = "gray")
 
     for orbit in range(1, orbits):
         new_orbit = step * orbit+0.1
@@ -96,7 +97,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
 
         labels_idx = np.append(labels_idx, idx_int)
         planets = sum(idx)
-        angles = get_angles(orbit, planets)
+        angles = get_angles(orbit, planets, ax)
 
         # place planets
         while np.any(idx):
@@ -108,23 +109,24 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
             y = get_y(angle, orbit)
             # current_idx = idx_int[current_planet]
             color = colors[current_idx]
-            plt.scatter(x, y, color=color_map(color), s=250, label=labels[current_idx])
+            plt.scatter(x + 0.15, y + 0.15, color=color_map(color), s=250, label=labels[current_idx])
             planet_idx = current_idx
             idx[planet_idx] = False
             all_idx[planet_idx] = False
 
             planet_corr = corr_dist[planet_idx]
             #ax.text(x-0.35, y+0.2, "{0:.3f}".format(planet_corr[center_idx]))
-            ax.text(x, y+0.1,  str(labels[planet_idx]),verticalalignment="bottom", horizontalalignment='left')
+            ax.text(x, y + 0.1, str(labels[planet_idx]), verticalalignment="bottom", horizontalalignment='left',
+                    color = "gray")
             moon_idx = (planet_corr >= 0.8) & all_idx
             moon_idx_int = np.where(moon_idx)[0]
             moons = sum(moon_idx)
-            moon_angles = get_angles(0, moons)
+            moon_angles = get_angles(0, moons, ax)
 
             # add orbit around planet if it has moons
             if np.any(moon_idx):
                 moon_orbit = 0.5
-                circle = plt.Circle((x, y), moon_orbit, color='grey', alpha=0.8, fill=True, zorder=0)
+                circle = plt.Circle((x, y), moon_orbit, color='lightgrey', alpha=0.8, fill=True, zorder=0)
                 fig.gca().add_artist(circle)
 
             while np.any(moon_idx):
@@ -136,7 +138,8 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
                 m_y = get_y(angle, moon_orbit) + y
                 color = colors[current_moon_idx]
                 plt.scatter(m_x, m_y, color=color_map(color), s=100, label=labels[current_moon_idx])
-                ax.text(m_x, m_y+0.05, str(labels[current_moon_idx]),verticalalignment="bottom", horizontalalignment='left')
+                ax.text(m_x + 0.15, m_y + 0.05, str(labels[current_moon_idx]), verticalalignment="bottom",
+                        horizontalalignment='left')
                 moon_idx[current_moon_idx] = False
                 idx[current_moon_idx] = False
                 all_idx[current_moon_idx] = False
@@ -151,7 +154,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
     ax = plt.gca()
 
     ax.axis("equal")
-    plt.axis([-10,10,-10,10])
+    plt.axis([-10, 10, -10, 10])
     if save_png:
         plt.savefig(image_path)
 
@@ -162,7 +165,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
 def main(input_csv,sun,image_path):
     # Load data
     data = np.genfromtxt(input_csv, delimiter=",", skip_header=1)
-    labels = csv.DictReader(open(input_csv),skipinitialspace=True).fieldnames
+    labels = csv.DictReader(open(input_csv), skipinitialspace=True).fieldnames
     solar_corr(data, labels, sun, image_path=image_path)
 
 
