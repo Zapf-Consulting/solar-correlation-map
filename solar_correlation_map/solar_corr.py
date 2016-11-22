@@ -58,7 +58,8 @@ def label_to_idx(labels, label):
 def transform_to_correlation_dist(data):
     y_corr = np.corrcoef(data.T)
     # we just need the magnitude of the correlation and don't care whether it's positive or not
-    return np.abs(y_corr)
+    abs_corr = np.abs(y_corr)
+    return np.nan_to_num(abs_corr)
 
 
 def transform_to_positive_corrs(data, sun_idx):
@@ -97,8 +98,8 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
     ax.text(0.2, 0.2, str(labels[center_idx]), verticalalignment="bottom", horizontalalignment='left', color="gray")
 
     for orbit in range(1, orbits + 1):
-        new_orbit = step * orbit+0.1
-        idx = (sun_corr_dist >= (1-last_orbit)) & (sun_corr_dist >= (1-new_orbit)) & all_idx
+        new_orbit = step * orbit + 0.1
+        idx = (sun_corr_dist >= (1 - last_orbit)) & (sun_corr_dist > (1 - new_orbit)) & all_idx
         idx_int = np.where(idx)[0]
 
         corr_dists = []
@@ -129,6 +130,8 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
             planet_corr = corr_dist[planet_idx]
             #ax.text(x-0.35, y+0.2, "{0:.3f}".format(planet_corr[center_idx]))
             col = "#03C03C" if positive[planet_idx] else "#FF6961"
+            if orbit == orbits:
+                col = "grey"
             ax.text(x + 0.15, y + 0.15, str(labels[planet_idx]), verticalalignment="bottom", horizontalalignment='left',
                     color=col)
             moon_idx = (planet_corr >= 0.8) & all_idx
@@ -152,6 +155,8 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
                 color = colors[current_moon_idx]
                 plt.scatter(m_x, m_y, color=color_map(color), s=100, label=labels[current_moon_idx])
                 col = "#03C03C" if positive[current_moon_idx] else "#FF6961"
+                if orbit == orbits:
+                    col = "grey"
                 ax.text(m_x + 0.15, m_y + 0.05, str(labels[current_moon_idx]), verticalalignment="bottom",
                         horizontalalignment='left', color=col)
                 moon_idx[current_moon_idx] = False
