@@ -34,8 +34,8 @@ def get_angles(orbit, number_of_datapoints, ax):
     start = (2 * math.pi) / 11 * (orbit - 1)
     stop = start + (math.pi / 2)
     if orbit > 0:
-        ax.text(0, orbit, "{0:.2f}".format(1 - float(orbit) / 10), verticalalignment = "top",
-                horizontalalignment = "center", color = "lightgray")
+        ax.text(0, orbit, "{0:.2f}".format(1 - float(orbit) / 10), verticalalignment="top",
+                horizontalalignment="center", color="lightgray")
     return np.linspace(start, stop, number_of_datapoints, endpoint=True)
 
 
@@ -82,7 +82,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
 
     # place sun:
     plt.scatter(0, 0, color=color_map(colors[center_idx]), s=600, label=labels[center_idx])
-    ax.text(0.3, 0.25, str(labels[center_idx]), verticalalignment="bottom", horizontalalignment='left', color = "gray")
+    ax.text(0.3, 0.25, str(labels[center_idx]), verticalalignment="bottom", horizontalalignment='left', color="gray")
 
     for orbit in range(1, orbits):
         new_orbit = step * orbit+0.1
@@ -116,8 +116,8 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
 
             planet_corr = corr_dist[planet_idx]
             #ax.text(x-0.35, y+0.2, "{0:.3f}".format(planet_corr[center_idx]))
-            ax.text(x, y + 0.1, str(labels[planet_idx]), verticalalignment="bottom", horizontalalignment='left',
-                    color = "gray")
+            ax.text(x + 0.15, y + 0.15, str(labels[planet_idx]), verticalalignment="bottom", horizontalalignment='left',
+                    color="gray")
             moon_idx = (planet_corr >= 0.8) & all_idx
             moon_idx_int = np.where(moon_idx)[0]
             moons = sum(moon_idx)
@@ -139,7 +139,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
                 color = colors[current_moon_idx]
                 plt.scatter(m_x, m_y, color=color_map(color), s=100, label=labels[current_moon_idx])
                 ax.text(m_x + 0.15, m_y + 0.05, str(labels[current_moon_idx]), verticalalignment="bottom",
-                        horizontalalignment='left')
+                        horizontalalignment='left', color="gray")
                 moon_idx[current_moon_idx] = False
                 idx[current_moon_idx] = False
                 all_idx[current_moon_idx] = False
@@ -160,9 +160,9 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
 
     if show_window:
         plt.show()
-    
 
-def main(input_csv,sun,image_path):
+
+def main(input_csv, sun, image_path):
     # Load data
     data = np.genfromtxt(input_csv, delimiter=",", skip_header=1)
     labels = csv.DictReader(open(input_csv), skipinitialspace=True).fieldnames
