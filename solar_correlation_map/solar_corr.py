@@ -29,12 +29,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import csv
+import warnings
+
+warnings.filterwarnings("ignore", module="matplotlib")
 
 def get_angles(orbit, number_of_datapoints, ax):
     start = (2 * math.pi) / 11 * (orbit - 1)
     stop = start + (math.pi / 2)
     if orbit > 0:
-        ax.text(0, orbit, "{0:.2f}".format(1 - float(orbit) / 10), verticalalignment="top",
+        ax.text(0, orbit - 0.1, "{0:.1f}".format(1 - float(orbit) / 10), verticalalignment="top",
                 horizontalalignment="center", color="lightgray")
     return np.linspace(start, stop, number_of_datapoints, endpoint=True)
 
@@ -57,11 +60,20 @@ def transform_to_correlation_dist(data):
     # we just need the magnitude of the correlation and don't care whether it's positive or not
     return np.abs(y_corr)
 
+
+def transform_to_positive_corrs(data, sun_idx):
+    y_corr = np.corrcoef(data.T)
+    positive = y_corr[sun_idx]
+    positive = positive >= 0
+    return positive
+
+
 def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="solar.png", save_png=True):
     labels = np.array(labels)
     center_idx, center_idx_bool = label_to_idx(labels, center)
 
     all_idx = np.logical_not(center_idx_bool)
+    positive = transform_to_positive_corrs(data, center_idx)
     corr_dist = transform_to_correlation_dist(data)
     sun_corr_dist = corr_dist[center_idx]
     colors = np.linspace(0, 1, num=len(sun_corr_dist))
@@ -82,7 +94,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
 
     # place sun:
     plt.scatter(0, 0, color=color_map(colors[center_idx]), s=600, label=labels[center_idx])
-    ax.text(0.3, 0.25, str(labels[center_idx]), verticalalignment="bottom", horizontalalignment='left', color="gray")
+    ax.text(0.2, 0.2, str(labels[center_idx]), verticalalignment="bottom", horizontalalignment='left', color="gray")
 
     for orbit in range(1, orbits):
         new_orbit = step * orbit+0.1
@@ -116,8 +128,9 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
 
             planet_corr = corr_dist[planet_idx]
             #ax.text(x-0.35, y+0.2, "{0:.3f}".format(planet_corr[center_idx]))
+            col = "#03C03C" if positive[planet_idx] else "#FF6961"
             ax.text(x + 0.15, y + 0.15, str(labels[planet_idx]), verticalalignment="bottom", horizontalalignment='left',
-                    color="gray")
+                    color=col)
             moon_idx = (planet_corr >= 0.8) & all_idx
             moon_idx_int = np.where(moon_idx)[0]
             moons = sum(moon_idx)
@@ -138,8 +151,9 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
                 m_y = get_y(angle, moon_orbit) + y
                 color = colors[current_moon_idx]
                 plt.scatter(m_x, m_y, color=color_map(color), s=100, label=labels[current_moon_idx])
+                col = "#03C03C" if positive[current_moon_idx] else "#FF6961"
                 ax.text(m_x + 0.15, m_y + 0.05, str(labels[current_moon_idx]), verticalalignment="bottom",
-                        horizontalalignment='left', color="gray")
+                        horizontalalignment='left', color=col)
                 moon_idx[current_moon_idx] = False
                 idx[current_moon_idx] = False
                 all_idx[current_moon_idx] = False
