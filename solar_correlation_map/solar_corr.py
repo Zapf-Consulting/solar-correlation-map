@@ -96,7 +96,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
     plt.scatter(0, 0, color=color_map(colors[center_idx]), s=600, label=labels[center_idx])
     ax.text(0.2, 0.2, str(labels[center_idx]), verticalalignment="bottom", horizontalalignment='left', color="gray")
 
-    for orbit in range(1, orbits):
+    for orbit in range(1, orbits + 1):
         new_orbit = step * orbit+0.1
         idx = (sun_corr_dist >= (1-last_orbit)) & (sun_corr_dist >= (1-new_orbit)) & all_idx
         idx_int = np.where(idx)[0]
