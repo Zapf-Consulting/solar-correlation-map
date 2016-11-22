@@ -109,7 +109,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
             y = get_y(angle, orbit)
             # current_idx = idx_int[current_planet]
             color = colors[current_idx]
-            plt.scatter(x + 0.15, y + 0.15, color=color_map(color), s=250, label=labels[current_idx])
+            plt.scatter(x, y, color=color_map(color), s=250, label=labels[current_idx])
             planet_idx = current_idx
             idx[planet_idx] = False
             all_idx[planet_idx] = False
