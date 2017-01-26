@@ -1,5 +1,3 @@
-"""Load the Boston dataset and examine its target (label) distribution."""
-
 # MIT License
 
 # Copyright (c) 2016 Stefan Zapf, Christopher Kraushaar
@@ -31,7 +29,8 @@ import sys
 import csv
 import warnings
 
-warnings.filterwarnings("ignore", module="matplotlib")
+warnings.filterwarnings("ignore")
+
 
 def get_angles(orbit, number_of_datapoints, ax):
     start = (2 * math.pi) / 11 * (orbit - 1)
@@ -128,7 +127,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
             all_idx[planet_idx] = False
 
             planet_corr = corr_dist[planet_idx]
-            #ax.text(x-0.35, y+0.2, "{0:.3f}".format(planet_corr[center_idx]))
+            # ax.text(x-0.35, y+0.2, "{0:.3f}".format(planet_corr[center_idx]))
             col = "#03C03C" if positive[planet_idx] else "#FF6961"
             if orbit == orbits:
                 col = "grey"
@@ -189,5 +188,9 @@ def main(input_csv, sun, image_path):
 
 
 if __name__ == "__main__":
-    image_path = sys.argv[3] if len(sys.argv) > 3 else "solar.png" 
-    main(sys.argv[1], sys.argv[2], image_path)
+    try:
+        image_path = sys.argv[3] if len(sys.argv) > 3 else "solar.png"
+        main(sys.argv[1], sys.argv[2], image_path)
+    except:
+        print("python -m solar_correlation_map CSV_FILE_PATH SUN_VARIABLE [IMAGE_FILE_NAME]")
+        print("example: python -m solar_correlation_map jedi.csv JEDI jedi.png")
