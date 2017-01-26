@@ -1,4 +1,4 @@
-# solar-correlation-map
+# Solar Correlation Map
 A new way to visualize correlations. 
 
 ## Installation
@@ -22,4 +22,7 @@ The image file name is optional and can be used to change the default file name 
 ``python -m solar_correlation_map jedi.csv JEDI jedi.png``
 
 ![solar correlation map](https://github.com/Zapf-Consulting/solar-correlation-map/blob/master/solar.png "Solar Correlation Map example")
+
+![Zapf Consulting](http://www.zapf-consulting.com/ "Zapf Consulting")
+
 
