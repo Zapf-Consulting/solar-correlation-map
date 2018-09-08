@@ -17,7 +17,7 @@ The image file name is optional and can be used to change the default file name 
 
 
 ## Example
-``python -m solar_correlation_map jedi.csv JEDI jedi.png``
+``python solar_corr.py jedi.csv JEDI jedi.png``
 
 ![solar correlation map](https://github.com/Zapf-Consulting/solar-correlation-map/blob/master/solar.png "Solar Correlation Map example")
 
