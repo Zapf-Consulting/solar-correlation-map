@@ -1,6 +1,15 @@
 # Solar Correlation Map
 A new way to visualize correlations. 
 
+
+## Installation 
+The installation just requires you to clone the repo and install the requirements: 
+
+``git clone https://github.com/Zapf-Consulting/solar-correlation-map.git
+cd solar-correlation-map
+pip -r requirements.txt`` 
+
+
 ## Basic usage
 ``python solar_corr.py CSV_FILE_PATH SUN_VARIABLE [IMAGE_FILE_NAME]``
 
