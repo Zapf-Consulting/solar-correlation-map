@@ -1,17 +1,15 @@
 # Solar Correlation Map
 A new way to visualize correlations. 
 
-## Installation
-
-Install the solar correlation map with:
-``pip install solar-correlation-map``
-
-
 ## Basic usage
-``python -m solar_correlation_map CSV_FILE_PATH SUN_VARIABLE [IMAGE_FILE_NAME]``
+``python solar_corr.py CSV_FILE_PATH SUN_VARIABLE [IMAGE_FILE_NAME]``
 
 
 The csv file must have a header that includes the variable/column names in the first line.
+
+The csv file is your original data set, you do not need to create a correlation matrix yourself, we got you covered. 
+
+Currently we do not support factor variables, please transform them beforehand. 
 
 The sun variable is the dependentant variable in the center of solar system.
 
