@@ -7,7 +7,8 @@ The installation just requires you to clone the repo and install the requirement
 
 ```git clone https://github.com/Zapf-Consulting/solar-correlation-map.git
 cd solar-correlation-map
-pip -r requirements.txt```
+pip -r requirements.txt
+```
 
 
 ## Basic usage
