@@ -23,6 +23,7 @@
 # Load libraries
 import math
 
+
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
@@ -69,19 +70,20 @@ def transform_to_positive_corrs(data, sun_idx):
     return positive
 
 
+
 def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="solar.png",
                save_png=True, title="Solar Correlation Map"):
     labels = np.array(labels)
     center_idx, center_idx_bool = label_to_idx(labels, center)
-
+    plot_idx = 23
     all_idx = np.logical_not(center_idx_bool)
     positive = transform_to_positive_corrs(data, center_idx)
     corr_dist = transform_to_correlation_dist(data)
     sun_corr_dist = corr_dist[center_idx]
     colors = np.linspace(0, 1, num=len(sun_corr_dist))
-
+    cordinate_to_correlation = {}
     step = 1.0 / orbits
-    last_orbit = 0.0
+    last_orbit = 0.1
     fig = plt.gcf()
     fig.set_size_inches(20, 20)
     labels_idx = np.array([center_idx])
@@ -124,11 +126,14 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
             # current_idx = idx_int[current_planet]
             color = colors[current_idx]
             plt.scatter(x, y, color=color_map(color), s=250, label=labels[current_idx])
+            cordinate_to_correlation[(x, y)] = {"is_planet": True, "corr_sun": corr_dist[center_idx, current_idx] }
+
             planet_idx = current_idx
             idx[planet_idx] = False
             all_idx[planet_idx] = False
 
             planet_corr = corr_dist[planet_idx]
+
             # ax.text(x-0.35, y+0.2, "{0:.3f}".format(planet_corr[center_idx]))
             col = "#03C03C" if positive[planet_idx] else "#FF6961"
             if orbit == orbits:
@@ -155,6 +160,7 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
                 m_y = get_y(angle, moon_orbit) + y
                 color = colors[current_moon_idx]
                 plt.scatter(m_x, m_y, color=color_map(color), s=100, label=labels[current_moon_idx])
+                cordinate_to_correlation[(m_x, m_y)] = {"is_planet": False, "corr_sun": corr_dist[center_idx][current_moon_idx]}
                 col = "#03C03C" if positive[current_moon_idx] else "#FF6961"
                 if orbit == orbits:
                     col = "grey"
@@ -183,6 +189,19 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
         plt.savefig(image_path)
 
     if show_window:
+        # only require mplcursors if we need an interactive plot
+        import mplcursors
+        # cooordinate_to_correlation[(sel.target.x, sel.target.y)]["corr_sun"])
+        cursors = mplcursors.cursor(hover=True)
+        @cursors.connect("add")
+        def _(sel):
+            sel.annotation.set(position=(15, -15))
+            # Note: Needs to be set separately due to matplotlib/matplotlib#8956.
+            sel.annotation.get_bbox_patch().set(fc="lightgrey")
+            sel.annotation.arrow_patch.set(arrowstyle="simple", fc="white", alpha=0)
+            sel.annotation.set_text("Correlation to sun \n{}".format(cordinate_to_correlation[ (sel.target[0],sel.target[1])]["corr_sun"]))
+
+
         plt.show()
 
 
