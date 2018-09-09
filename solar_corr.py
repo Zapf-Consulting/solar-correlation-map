@@ -28,6 +28,7 @@ import numpy as np
 import sys
 import csv
 import warnings
+import argparse
 
 warnings.filterwarnings("ignore")
 
@@ -68,7 +69,8 @@ def transform_to_positive_corrs(data, sun_idx):
     return positive
 
 
-def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="solar.png", save_png=True):
+def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="solar.png",
+               save_png=True, title="Solar Correlation Map"):
     labels = np.array(labels)
     center_idx, center_idx_bool = label_to_idx(labels, center)
 
@@ -169,10 +171,14 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
 
     labels_pos = np.array(labels)[labels_idx]
     recs = []
+
     ax = plt.gca()
 
     ax.axis("equal")
     plt.axis([-10, 10, -10, 10])
+    plt.suptitle(title, fontsize=16)
+
+    plt.subplots_adjust(top=0.95)
     if save_png:
         plt.savefig(image_path)
 
@@ -180,17 +186,20 @@ def solar_corr(data, labels, center, orbits=10, show_window=True, image_path="so
         plt.show()
 
 
-def main(input_csv, sun, image_path):
+def main(input_csv, sun, image_path, title):
     # Load data
     data = np.genfromtxt(input_csv, delimiter=",", skip_header=1)
     labels = csv.DictReader(open(input_csv), skipinitialspace=True).fieldnames
-    solar_corr(data, labels, sun, image_path=image_path)
+    solar_corr(data, labels, sun, image_path=image_path, title=title)
 
 
 if __name__ == "__main__":
-    try:
-        image_path = sys.argv[3] if len(sys.argv) > 3 else "solar.png"
-        main(sys.argv[1], sys.argv[2], image_path)
-    except:
-        print("python solar_corr.py CSV_FILE_PATH SUN_VARIABLE [IMAGE_FILE_NAME]")
-        print("example: python solar-corr.py jedi.csv JEDI jedi.png")
+    parser = argparse.ArgumentParser(description='Create a solar correlation map')
+    parser.add_argument("csv_file", type=str)
+    parser.add_argument("sun_variable", type=str)
+    parser.add_argument("image_file_name",  type=str, nargs="?", default="solar.png")
+    parser.add_argument("--title", nargs="?", default=None)
+    args = parser.parse_args()
+    if args.title is None:
+        args.title = "Solar Correlation Map for '{}' ".format(args.sun_variable)
+    main(args.csv_file, args.sun_variable, args.image_file_name, args.title)

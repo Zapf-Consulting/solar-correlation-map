@@ -11,7 +11,7 @@ pip -r requirements.txt``
 
 
 ## Basic usage
-``python solar_corr.py CSV_FILE_PATH SUN_VARIABLE [IMAGE_FILE_NAME]``
+``python solar_corr.py CSV_FILE_PATH SUN_VARIABLE [IMAGE_FILE_NAME] --title "TITLE FOR THE PLOT"``
 
 
 The csv file must have a header that includes the variable/column names in the first line.
@@ -26,7 +26,7 @@ The image file name is optional and can be used to change the default file name 
 
 
 ## Example
-``python solar_corr.py jedi.csv JEDI jedi.png``
+``python solar_corr.py jedi.csv JEDI solar.png --title "Detecting Jedis"``
 
 ![solar correlation map](https://github.com/Zapf-Consulting/solar-correlation-map/blob/master/solar.png "Solar Correlation Map example")
 
